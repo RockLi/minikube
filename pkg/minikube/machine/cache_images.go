@@ -67,9 +67,16 @@ func CacheImages(images []string, cacheDir string) error {
 	var g errgroup.Group
 	for _, image := range images {
 		image := image
+
 		g.Go(func() error {
 			dst := filepath.Join(cacheDir, image)
 			dst = sanitizeCacheDir(dst)
+
+			if _, err := os.Stat(dst); err == nil {
+				// skip cached local image
+				return nil
+			}
+
 			if err := CacheImage(image, dst); err != nil {
 				return errors.Wrapf(err, "caching image %s", dst)
 			}

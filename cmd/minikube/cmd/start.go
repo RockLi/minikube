@@ -337,6 +337,14 @@ func runStart(cmd *cobra.Command, args []string) {
 		}
 	}
 
+	fmt.Println("Loading cached images from config file.")
+	err = LoadCachedImagesInConfigFile()
+	if err != nil {
+		fmt.Println("Unable to load cached images from config file.")
+	}
+
+	time.Sleep(120 * time.Second)
+
 	if !exists || config.VMDriver == constants.DriverNone {
 		fmt.Println("Starting cluster components...")
 		if err := k8sBootstrapper.StartCluster(kubernetesConfig); err != nil {
@@ -443,11 +451,6 @@ This can also be done automatically by setting the env var CHANGE_MINIKUBE_NONE_
 		}
 	}
 
-	fmt.Println("Loading cached images from config file.")
-	err = LoadCachedImagesInConfigFile()
-	if err != nil {
-		fmt.Println("Unable to load cached images from config file.")
-	}
 	fmt.Println("\n\nEverything looks great. Please enjoy minikube!")
 	return
 }
